@@ -1,4 +1,4 @@
-# Soma CLIs
+# Some CLIs
 
 ## Guess the number game
 
