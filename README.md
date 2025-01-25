@@ -1,8 +1,10 @@
-# Guess the number game
+# Soma CLIs
+
+## Guess the number game
 
 ランダムで生成される数値を当てるCLIゲームです。
 
-## 遊び方
+### 遊び方
 
 1. 以下のようにn, mに任意の整数を入力して実行します。（nはm未満）
 2. 回答の入力を求められるので、n~mまでの整数値を入力して回答します。
