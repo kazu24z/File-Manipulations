@@ -20,7 +20,7 @@ class Main:
     
     @staticmethod
     def replace_string():
-        pass
+        replace_stringImpl()
 
 def reverseImpl() -> None:
     try:
@@ -95,6 +95,33 @@ def duplicate_contentsImpl() -> None:
     except ValueError as e:
         print(f"Error: {e}")
 
+def replace_stringImpl() -> None:
+    try:
+        # コマンドのバリデーション
+        validate_exist_args(check_input_path=True, check_output_path=False, check_params=True)
+
+        # 関数個別のバリデーション
+        errors = []
+        if(len(Main.params) != 2):
+            errors.append("The params must have two string element.")
+        if errors:
+            error_message = "\n".join(errors)
+            raise ValueError(error_message)
+
+        with open(Main.input_path, "r+") as file:
+            contents = file.readlines() # 先頭から読み取って１行ごとにリストに格納
+            
+            updated_contents = [line.replace(Main.params[0], Main.params[1]) for line in contents] # 各行の文字列を置換
+            
+            file.seek(0) # 上書きするためにポインタをファイルの先頭に移動
+            file.writelines(updated_contents)
+            file.truncate() # ファイルの末尾を切り詰める
+
+    except FileNotFoundError as e:
+        print(f"Error: {Main.input_path} is not found.")
+    except ValueError as e:
+        print(f"Error: {e}")
+
 def validate_exist_args(check_input_path: bool, check_output_path: bool, check_params: bool) -> None:
     errors: list[str] = []
     
@@ -127,7 +154,6 @@ if __name__ == "__main__":
             
             Main.input_path = sys.argv[2]
             Main.output_path = sys.argv[3]
-            
         elif method_name == "copy":
             if len(sys.argv) < 3:
                 print("Error: Invalid arguments.")
@@ -137,6 +163,13 @@ if __name__ == "__main__":
             Main.output_path = sys.argv[3]
         elif method_name == "duplicate_contents":
             if len(sys.argv) < 3:
+                print("Error: Invalid arguments.")
+                sys.exit(1)
+            
+            Main.input_path = sys.argv[2]
+            Main.params = sys.argv[3:]
+        elif method_name == "replace_string":
+            if len(sys.argv) < 4:
                 print("Error: Invalid arguments.")
                 sys.exit(1)
             
