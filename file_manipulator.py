@@ -16,7 +16,7 @@ class Main:
     
     @staticmethod
     def duplicate_contents():
-        pass
+        duplicate_contentsImpl()
     
     @staticmethod
     def replace_string():
@@ -66,6 +66,34 @@ def copyImpl() -> None:
         print(f"Error: {Main.input_path} is not found.")
     except ValueError as e:
         print(f"Error: {e}")
+        
+def duplicate_contentsImpl() -> None:
+    try:
+        # コマンドのバリデーション
+        validate_exist_args(check_input_path=True, check_output_path=False, check_params=True)
+
+        # 関数個別のバリデーション
+        errors = []
+
+        if(len(Main.params) != 1):
+            errors.append("The params must have one int element.")
+        if len(Main.params) == 1 and not Main.params[0].isnumeric():
+            errors.append("The param must be an integer.")
+        if errors:
+            error_message = "\n".join(errors)
+            raise ValueError(error_message)
+
+        # クラス変数から入力ファイルを読み込む
+        with open(Main.input_path, "a+") as file:
+            file.seek(0)
+            contents = file.readlines()
+            for n in range(int(Main.params[0])):
+                file.writelines(contents)
+
+    except FileNotFoundError as e:
+        print(f"Error: {Main.input_path} is not found.")
+    except ValueError as e:
+        print(f"Error: {e}")
 
 def validate_exist_args(check_input_path: bool, check_output_path: bool, check_params: bool) -> None:
     errors: list[str] = []
@@ -84,16 +112,44 @@ def validate_exist_args(check_input_path: bool, check_output_path: bool, check_p
 
 if __name__ == "__main__":
     if len(sys.argv) > 1:
-        method_name = sys.argv[1]  # コマンドライン引数でメソッド名を取得
-        Main.input_path = sys.argv[2] if len(sys.argv) > 2 else None
-        Main.output_path = sys.argv[3] if len(sys.argv) > 3 else None
-        Main.params = sys.argv[4:] if len(sys.argv) > 4 else None
-
+        raw_method_name= sys.argv[1] if len(sys.argv) > 1 else None
+        if raw_method_name is None:
+            print("Error: No method specified.")
+            sys.exit(1)
+        
+        method_name = raw_method_name.replace("-", "_")
+        
+        # コマンド事に引数を解析する
+        if method_name == "reverse":
+            if len(sys.argv) < 3:
+                print("Error: Invalid arguments.")
+                sys.exit(1)
+            
+            Main.input_path = sys.argv[2]
+            Main.output_path = sys.argv[3]
+            
+        elif method_name == "copy":
+            if len(sys.argv) < 3:
+                print("Error: Invalid arguments.")
+                sys.exit(1)
+            
+            Main.input_path = sys.argv[2]
+            Main.output_path = sys.argv[3]
+        elif method_name == "duplicate_contents":
+            if len(sys.argv) < 3:
+                print("Error: Invalid arguments.")
+                sys.exit(1)
+            
+            Main.input_path = sys.argv[2]
+            Main.params = sys.argv[3:]
+        # 実行    
         if hasattr(Main, method_name):
             method = getattr(Main, method_name)
             method()  # メソッドを実行
         else:
             print(f"Error: Method '{method_name}' not found in class Main.")
+            sys.exit(1)
+        
     else:
         print("Error: No method specified.")
         
