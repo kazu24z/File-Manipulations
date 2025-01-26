@@ -12,7 +12,7 @@ class Main:
     
     @staticmethod
     def copy():
-        pass
+        copyImpl()
     
     @staticmethod
     def duplicate_contents():
@@ -51,15 +51,31 @@ def reverseImpl() -> None:
     except ValueError as e:
         print(f"Error: {e}")
     
+def copyImpl() -> None:
+    try:
+        # コマンドのバリデーション
+        validate_exist_args(check_input_path=True, check_output_path=True, check_params=False)
+        
+        # クラス変数から入力ファイルを読み込む
+        with open(Main.input_path) as file:
+            contents = file.readlines() # [line1, line2, ...]
+        
+        with open(Main.output_path, "w") as file:
+            file.writelines(contents)
+    except FileNotFoundError as e:
+        print(f"Error: {Main.input_path} is not found.")
+    except ValueError as e:
+        print(f"Error: {e}")
+
 def validate_exist_args(check_input_path: bool, check_output_path: bool, check_params: bool) -> None:
     errors: list[str] = []
     
     if check_input_path and Main.input_path is None:
-        errors.append("Error: The input_path argument is required.")
+        errors.append("The input_path argument is required.")
     if check_output_path and Main.output_path is None:
-        errors.append("Error: The output_path argument is required.")
+        errors.append("The output_path argument is required.")
     if check_params and Main.params is None:
-        errors.append("Error: params argument is required.")
+        errors.append("params argument is required.")
     
     if errors:
         error_message = "\n".join(errors)
