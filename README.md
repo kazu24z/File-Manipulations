@@ -47,3 +47,12 @@ python3 file_manipulator.py <コマンド名> 引数1 ... 引数n
   指定したファイル内にある"needle"を"new-string"に置き換えます。
 
   `python3 file_manipulator.py replace-string <入力ファイルパス> <needle> <new-string>`
+
+## File Converter
+markdown形式をHTMLに変換するツールです。
+
+### コマンド
+
+```
+python3 file-converder.py markdown <mdファイルパス> <htmlファイルパス>
+```
